@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/5ee61beb-f372-401b-a0ef-a7f9b2f0fcf4
+
 # ViewManager - AutoCAD View & Palette Management Plugin
 
 <details>
