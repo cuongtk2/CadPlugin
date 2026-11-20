@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>HcPdfPrinter</RootNamespace>
+    <AssemblyName>HcPdfPrinter</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- PDFsharp ghép/xuất PDF; Contracts cho phép gọi Windows.Data.Pdf (WinRT) từ .NET Framework -->
+    <PackageReference Include="PDFsharp" Version="6.1.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.19041.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Printing" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,70 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+  <!-- UpgradeCode phải giữ nguyên mọi phiên bản. Mỗi bản phát hành mới chỉ tăng Version. -->
+  <Package Name="HcPdfPrinter"
+           Manufacturer="Hung Manh Cuong"
+           Version="1.0.1.0"
+           UpgradeCode="673BF825-0A5A-400C-81AA-52DF7A1CE268"
+           Scope="perMachine">
+
+    <MajorUpgrade DowngradeErrorMessage="Da cai phien ban moi hon cua HcPdfPrinter." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Máy đích cần .NET Framework 4.8 trở lên (khoá Release >= 528040) -->
+    <Property Id="NETFXRELEASE">
+      <RegistrySearch Id="NetFxRelease" Root="HKLM"
+                      Key="SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"
+                      Name="Release" Type="raw" />
+    </Property>
+    <Launch Condition="Installed OR (NETFXRELEASE &gt;= &quot;#528040&quot;)"
+            Message="HcPdfPrinter can .NET Framework 4.8 tro len. Hay cai .NET Framework 4.8 roi chay lai." />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="HcPdfPrinter">
+
+        <!-- Toàn bộ output của dotnet publish, trừ exe chính (khai báo riêng bên dưới) -->
+        <Files Include="$(var.PublishDir)\**">
+          <Exclude Files="$(var.PublishDir)\HcPdfPrinter.exe" />
+          <Exclude Files="$(var.PublishDir)\*.pdb" />
+        </Files>
+
+        <Component Id="MainExe">
+          <File Id="HcPdfPrinterExe" Source="$(var.PublishDir)\HcPdfPrinter.exe" KeyPath="yes">
+            <!-- Shortcut trong Start Menu -->
+            <Shortcut Directory="ProgramMenuFolder" Name="HcPdf Writer" Advertise="yes" />
+          </File>
+          <!-- Tray tự chạy khi đăng nhập Windows -->
+          <RegistryValue Root="HKLM"
+                         Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                         Name="HcPdfPrinter"
+                         Type="string"
+                         Value="&quot;[INSTALLFOLDER]HcPdfPrinter.exe&quot;" />
+        </Component>
+
+      </Directory>
+    </StandardDirectory>
+
+    <!-- Tắt tray đang chạy trước khi ghi đè/xoá file -->
+    <util:CloseApplication Id="CloseTray" Target="HcPdfPrinter.exe"
+                           CloseMessage="no" TerminateProcess="1" RebootPrompt="no" />
+
+    <!-- Tạo / gỡ máy in "HcPdf Writer" bằng chính exe ở chế độ /quiet (chạy bằng quyền SYSTEM) -->
+    <CustomAction Id="InstallPrinter" FileRef="HcPdfPrinterExe" ExeCommand="install /quiet"
+                  Execute="deferred" Impersonate="no" Return="check" />
+    <CustomAction Id="UninstallPrinter" FileRef="HcPdfPrinterExe" ExeCommand="uninstall /quiet"
+                  Execute="deferred" Impersonate="no" Return="ignore" />
+
+    <!-- Mo tray ngay sau khi cai (chay voi quyen user dang cai, khong phai SYSTEM) -->
+    <CustomAction Id="LaunchTray" FileRef="HcPdfPrinterExe" ExeCommand=""
+                  Return="asyncNoWait" />
+
+    <InstallExecuteSequence>
+      <Custom Action="InstallPrinter" After="InstallFiles" Condition="NOT REMOVE" />
+      <!-- Chỉ gỡ máy in khi gỡ cài đặt thật, không gỡ khi nâng cấp phiên bản -->
+      <Custom Action="UninstallPrinter" Before="RemoveFiles" Condition="REMOVE=&quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE" />
+      <Custom Action="LaunchTray" After="InstallFinalize" Condition="NOT Installed AND UILevel &gt;= 3" />
+    </InstallExecuteSequence>
+
+  </Package>
+</Wix>
