@@ -1,34 +1,34 @@
 # HcPdfPrinter (HcPdf Writer)
 
-Công cụ máy in ảo và trình xem/ghép trang PDF cho luồng in từ **AutoCAD** (hỗ trợ gom nhiều job in, chỉnh hướng/thứ tự/tên trang, tạo bookmark tự động và xuất ra file PDF hoàn chỉnh)[cite: 3, 4, 5, 6, 7, 10].
+Công cụ máy in ảo và trình xem/ghép trang PDF cho luồng in từ **AutoCAD** (hỗ trợ gom nhiều job in, chỉnh hướng/thứ tự/tên trang, tạo bookmark tự động và xuất ra file PDF hoàn chỉnh).
 
 ---
 
 ## Kiến trúc & Thành phần chính
 
-- **Máy in ảo (`HcPdf Writer`)**: Dùng driver `Microsoft Print To PDF` và trỏ port tới file spool `job.pdf` trong thư mục `spool`[cite: 10, 13].
-- **Tray App (`TrayApp.cs`, `Program.cs`)**: Chạy nền ở khay hệ thống (chỉ cho phép 1 instance qua Mutex), theo dõi job in qua `SpoolWatcher`, mở `ViewerWindow` theo session và ghi log tại `log.txt`[cite: 6, 7, 11].
-- **SpoolWatcher (`SpoolWatcher.cs`)**: Chờ spooler ghi xong file PDF (`%%EOF` hoặc kích thước ổn định), chuyển file sang thư mục `queue` và lấy tên tài liệu từ hàng đợi in[cite: 7, 13].
-- **ViewerWindow (`ViewerWindow.xaml`, `ViewerWindow.xaml.cs`)**: Xem trước trang (hỗ trợ fit chiều rộng, zoom, xoay 90° trái/phải, đổi thứ tự lên/xuống, xóa trang, sửa tiêu đề từng trang)[cite: 4, 5].
-- **PdfExporter (`PdfExporter.cs`)**: Ghép các trang trong session thành một file PDF duy nhất, áp dụng góc xoay và tạo bookmark/outline theo tiêu đề từng trang[cite: 3].
+- **Máy in ảo (`HcPdf Writer`)**: Dùng driver `Microsoft Print To PDF` và trỏ port tới file spool `job.pdf` trong thư mục `spool`.
+- **Tray App (`TrayApp.cs`, `Program.cs`)**: Chạy nền ở khay hệ thống (chỉ cho phép 1 instance qua Mutex), theo dõi job in qua `SpoolWatcher`, mở `ViewerWindow` theo session và ghi log tại `log.txt`.
+- **SpoolWatcher (`SpoolWatcher.cs`)**: Chờ spooler ghi xong file PDF (`%%EOF` hoặc kích thước ổn định), chuyển file sang thư mục `queue` và lấy tên tài liệu từ hàng đợi in.
+- **ViewerWindow (`ViewerWindow.xaml`, `ViewerWindow.xaml.cs`)**: Xem trước trang (hỗ trợ fit chiều rộng, zoom, xoay 90° trái/phải, đổi thứ tự lên/xuống, xóa trang, sửa tiêu đề từng trang).
+- **PdfExporter (`PdfExporter.cs`)**: Ghép các trang trong session thành một file PDF duy nhất, áp dụng góc xoay và tạo bookmark/outline theo tiêu đề từng trang.
 
 ---
 
 ## Đường dẫn làm việc mặc định
 
-Dữ liệu ứng dụng nằm dưới thư mục `CommonApplicationData\HcPdfPrinter` (ví dụ `C:\ProgramData\HcPdfPrinter`)[cite: 13]:
+Dữ liệu ứng dụng nằm dưới thư mục `CommonApplicationData\HcPdfPrinter` (ví dụ `C:\ProgramData\HcPdfPrinter`):
 
-- **Thư mục gốc (`Root`)**: `...\HcPdfPrinter` (chứa `log.txt`)[cite: 6, 13]
-- **Thư mục spool (`SpoolDir`)**: `...\HcPdfPrinter\spool\job.pdf`[cite: 13]
-- **Thư mục queue (`QueueDir`)**: `...\HcPdfPrinter\queue` (lưu các file PDF tạm của từng job in)[cite: 7, 13]
+- **Thư mục gốc (`Root`)**: `...\HcPdfPrinter` (chứa `log.txt`)
+- **Thư mục spool (`SpoolDir`)**: `...\HcPdfPrinter\spool\job.pdf`
+- **Thư mục queue (`QueueDir`)**: `...\HcPdfPrinter\queue` (lưu các file PDF tạm của từng job in)
 
 ---
 
 ## Cài đặt & Gỡ cài đặt máy in ảo
 
-1. Khởi chạy ứng dụng `HcPdfPrinter` (ứng dụng sẽ nằm ở khay hệ thống - System Tray)[cite: 6, 11].
-2. Chuột phải vào biểu tượng **HcPdf Writer** trên khay hệ thống và chọn **Cài máy in**[cite: 6, 13].
-3. Xác nhận **UAC (Run as Administrator)** nếu được hỏi[cite: 11]. Chương trình sẽ kiểm tra driver `Microsoft Print To PDF`, tạo port/máy in và cấp quyền `Modify` trên thư mục dữ liệu cho nhóm `Users`[cite: 10, 13].
+1. Khởi chạy ứng dụng `HcPdfPrinter` (ứng dụng sẽ nằm ở khay hệ thống - System Tray).
+2. Chuột phải vào biểu tượng **HcPdf Writer** trên khay hệ thống và chọn **Cài máy in**.
+3. Xác nhận **UAC (Run as Administrator)** nếu được hỏi[cite: 11]. Chương trình sẽ kiểm tra driver `Microsoft Print To PDF`, tạo port/máy in và cấp quyền `Modify` trên thư mục dữ liệu cho nhóm `Users`.
 
 Để gỡ máy in: chuột phải vào icon trên khay hệ thống và chọn **Gỡ máy in**[cite: 6].
 
