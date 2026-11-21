@@ -5,7 +5,8 @@ Công cụ máy in ảo và trình xem/ghép trang PDF cho luồng in từ **Aut
 ---
 
 ## Kiến trúc & Thành phần chính
-
+- Máy in ảo HcPdf Writer được viết để tăng khả năng làm việc với Pdf với chế độ page, open Pdf file.
+  
 - **Máy in ảo (`HcPdf Writer`)**: Dùng driver `Microsoft Print To PDF` và trỏ port tới file spool `job.pdf` trong thư mục `spool`.
 - **Tray App (`TrayApp.cs`, `Program.cs`)**: Chạy nền ở khay hệ thống (chỉ cho phép 1 instance qua Mutex), theo dõi job in qua `SpoolWatcher`, mở `ViewerWindow` theo session và ghi log tại `log.txt`.
 - **SpoolWatcher (`SpoolWatcher.cs`)**: Chờ spooler ghi xong file PDF (`%%EOF` hoặc kích thước ổn định), chuyển file sang thư mục `queue` và lấy tên tài liệu từ hàng đợi in.
@@ -28,34 +29,31 @@ Dữ liệu ứng dụng nằm dưới thư mục `CommonApplicationData\HcPdfPr
 
 1. Khởi chạy ứng dụng `HcPdfPrinter` (ứng dụng sẽ nằm ở khay hệ thống - System Tray).
 2. Chuột phải vào biểu tượng **HcPdf Writer** trên khay hệ thống và chọn **Cài máy in**.
-3. Xác nhận **UAC (Run as Administrator)** nếu được hỏi[cite: 11]. Chương trình sẽ kiểm tra driver `Microsoft Print To PDF`, tạo port/máy in và cấp quyền `Modify` trên thư mục dữ liệu cho nhóm `Users`.
+3. Xác nhận **UAC (Run as Administrator)** nếu được hỏi. Chương trình sẽ kiểm tra driver `Microsoft Print To PDF`, tạo port/máy in và cấp quyền `Modify` trên thư mục dữ liệu cho nhóm `Users`.
 
-Để gỡ máy in: chuột phải vào icon trên khay hệ thống và chọn **Gỡ máy in**[cite: 6].
+Để gỡ máy in: chuột phải vào icon trên khay hệ thống và chọn **Gỡ máy in**.
 
 ---
 
 ## Hướng dẫn in từ AutoCAD
 
-1. Mở hộp thoại **Plot** trong AutoCAD và chọn máy in **`HcPdf Writer`**[cite: 13].
+1. Mở hộp thoại **Plot** trong AutoCAD và chọn máy in **`HcPdf Writer`**.
 2. Chọn **Paper size** và **Drawing orientation** (**Landscape** hoặc **Portrait**) phù hợp với bản vẽ.
-3. Nếu bản vẽ Landscape bị xuất đứng, kiểm tra lại **Printing preferences** của máy in **`HcPdf Writer`** trong Windows để đảm bảo hướng giấy và khổ giấy khớp với thiết lập in[cite: 13].
-4. Bấm **OK / Plot** để gửi bản vẽ tới máy in ảo. `SpoolWatcher` sẽ tự động chuyển file sang `queue` và mở `ViewerWindow`[cite: 6, 7, 13].
+3. Nếu bản vẽ Landscape bị xuất đứng, kiểm tra lại **Printing preferences** của máy in **`HcPdf Writer`** trong Windows để đảm bảo hướng giấy và khổ giấy khớp với thiết lập in.
+4. Bấm **OK / Plot** để gửi bản vẽ tới máy in ảo. `SpoolWatcher` sẽ tự động chuyển file sang `queue` và mở `ViewerWindow`.
 
 ---
 
 ## Thao tác trong Viewer & Lưu PDF
 
-- **Thêm nhiều job vào cùng một session**: Khi `ViewerWindow` đang mở, mỗi lần in tiếp từ AutoCAD sẽ tự động nối thêm trang vào danh sách bên trái[cite: 5, 6]. Đóng `ViewerWindow` sẽ kết thúc session hiện tại[cite: 6].
-- **Sửa tên / bookmark từng trang**: Click vào ô tiêu đề của từng trang ở danh sách bên trái để đổi tên (tên này sẽ dùng làm bookmark khi xuất PDF)[cite: 3, 4, 5].
-- **Xoay trang**: Dùng **Xoay trái** (`270°`) hoặc **Xoay phải** (`90°`)[cite: 4, 5].
-- **Sắp xếp / Xóa trang**: Dùng **Lên**, **Xuống**, hoặc **Xoá trang** (hoặc phím `Delete` khi chọn item trong danh sách)[cite: 4, 5].
-- **Thu phóng**: Dùng **Vừa chiều rộng**, **100%**, **−**, **+**, hoặc giữ `Ctrl` + cuộn chuột[cite: 4, 5].
-- **Lưu file PDF**: Bấm **Lưu PDF...**, chọn đường dẫn lưu và tên file[cite: 4, 5].
+- **Thêm nhiều job vào cùng một session**: Khi `ViewerWindow` đang mở, mỗi lần in tiếp từ AutoCAD sẽ tự động nối thêm trang vào danh sách. Đóng `ViewerWindow` sẽ kết thúc session hiện tại.
+- **Sửa tên / bookmark từng trang**: Click vào ô tiêu đề của từng trang ở danh sách bên trái để đổi tên (tên này sẽ dùng làm bookmark khi xuất PDF).
+- **Xoay trang**: Dùng **Xoay trái** (`270°`) hoặc **Xoay phải** (`90°`).
+- **Sắp xếp / Xóa trang**: Dùng **Lên**, **Xuống**, hoặc **Xoá trang** (hoặc phím `Delete` khi chọn item trong danh sách).
+- **Thu phóng**: Dùng **Vừa chiều rộng**, **100%**, **−**, **+**, hoặc giữ `Ctrl` + cuộn chuột.
+- **Lưu file PDF**: Bấm **Lưu PDF...**, chọn đường dẫn lưu và tên file.
+- **Open PDF** : Chức năng ghép file pdf từ thư mục bất kỳ vào bản in, có thể ghép nhiều pdf files.
 
 ---
 
-## Dọn dẹp file tạm & Khắc phục sự cố nhanh
 
-- **Dọn file rác trong `queue`**: Nhả tài nguyên `PdfDocument` / ảnh khi đóng `ViewerWindow` và dọn các file `.pdf` trong `AppPaths.QueueDir` khi đóng `ViewerWindow`, khi khởi động `TrayApp`, hoặc trước `ExitThread()` khi thoát ứng dụng[cite: 5, 6, 7, 13].
-- **Kiểm tra log**: Chuột phải vào icon khay hệ thống -> **Mở file log** hoặc **Mở thư mục queue** để kiểm tra chi tiết khi có sự cố[cite: 6, 13].
-- **Lưu ý phiên bản `PDFsharp`**: Khai báo phiên bản ổn định rõ ràng trong `HcPdfPrinter.csproj` (tránh để wildcard không kiểm soát nếu gặp lỗi license/version)[cite: 2, 12].
