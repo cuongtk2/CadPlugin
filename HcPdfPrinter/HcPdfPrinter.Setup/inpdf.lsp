@@ -75,7 +75,7 @@
   (setvar "OSMODE" 0)
 
   (princ "\nChon cac doi tuong can in PDF: ")
-  (setq ss (ssget))
+  (setq ss (ssget '((0 . "INSERT,LWPOLYLINE,POLYLINE"))))
 
   (if ss
     (progn
